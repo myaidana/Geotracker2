@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eva_aidana.geotracker" >
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--<uses-feature android:required="true"-->
+        <!--android:name="android.hardware.location.gps"/>-->
+
+    <!--<uses-feature-->
+        <!--android:glEsVersion="0x00020000"-->
+        <!--android:required="true"/>-->
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+
+        <service
+            android:name="reception.SampleService"
+            android:exported="false" >
+        </service>
+
+        <service
+            android:name="reception.UploadService"
+            android:exported="false" >
+        </service>
+
+
+
+        <!--<receiver android:name="reception.NetworkMonitorReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+
+
+        <meta_data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBNuvk2yOvJnVeRubcQ6DX1KRtS2ienL2s"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBNuvk2yOvJnVeRubcQ6DX1KRtS2ienL2s" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="controller.LoginActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <receiver android:name="reception.NetworkReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
+
+
+        <activity
+            android:name="controller.CreateAccountActivity"
+            android:label="Create Account" >
+        </activity>
+
+        <activity
+            android:name="controller.DisplayDataActivity"
+            android:label="Display Data" >
+        </activity>
+
+        <activity
+            android:name="controller.ForgotPasswordActivity"
+            android:label="Forgot Password" >
+        </activity>
+
+        <activity
+            android:name="controller.FilterDatesActivity"
+            android:label="Filter Dates" >
+        </activity>
+
+        <activity
+            android:name="controller.MyProfileActivity"
+            android:label="My Profile" >
+        </activity>
+
+        <!--<activity-->
+            <!--android:name="controller.DisplayDataActivity"-->
+            <!--android:label="Display Data" >-->
+        <!--</activity>-->
+
+
+        <receiver
+            android:name="reception.BatteryReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BATTERY_LOW"/>
+                <action android:name="android.intent.action.BATTERY_OKAY"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+                <action android:name="android.intent.action.ACTION_DOCK_EVENT"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

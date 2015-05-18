@@ -1,0 +1,193 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top"
+    android:background="#2B3B4F" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20px"
+        android:gravity="top"
+        android:orientation="vertical">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="fill_vertical"
+                android:layout_gravity="top"
+                tools:context=".LinearLayout" >
+
+        <Button
+            android:id="@+id/registration_back"
+            android:text="Back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Account"
+            android:textSize="50px"
+            android:textStyle="bold"
+            android:paddingTop="200px"
+            android:paddingBottom="75px"
+            android:textColor="#ffffff"
+            />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity= "center"
+        tools:context=".LinearLayout" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="40px"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:padding="20px"/>
+
+        <EditText
+            android:id="@+id/useremail"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:textSize="40px"
+            android:inputType="textEmailAddress" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity= "center"
+        tools:context=".LinearLayout" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textColor="#ffffff"
+            android:textSize="40px"
+            android:textStyle="bold"
+            android:padding="10px"/>
+        <EditText
+            android:id="@+id/userpassword"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:textSize="40px"
+            android:inputType="textEmailAddress" />
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity= "center"
+        tools:context=".LinearLayout" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Security Question"
+            android:textSize="40px"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:padding="10px"/>
+        <EditText
+            android:id="@+id/usersecurityquestion"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:textSize="40px"
+            android:inputType="textEmailAddress" />
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity= "center"
+        tools:context=".LinearLayout" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Security Answer"
+            android:textSize="40px"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:padding="10px"/>
+        <EditText
+            android:id="@+id/usersecurityanswer"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:textSize="40px"
+            android:inputType="textEmailAddress" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity= "center"
+        android:paddingTop="5px"
+        tools:context=".LinearLayout" >
+
+        <Button
+            android:id="@+id/terms"
+            android:text="Register"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"/>
+
+        <CheckBox
+            android:id="@+id/Agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:text="Agree" />
+
+        <TextView
+            android:id="@+id/agreement_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40px"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:padding="10px"/>
+
+
+    </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

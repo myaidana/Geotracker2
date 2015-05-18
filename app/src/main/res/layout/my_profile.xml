@@ -1,0 +1,147 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:background="#2B3B4F"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal|top"
+    tools:context=".LinearLayout"
+    >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/back_to_filter"
+            android:text="Back"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="100px"
+        tools:context=".LinearLayout" >
+
+        <Button
+            android:id="@+id/startservice"
+            android:text="Start Service"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/endservice"
+            android:text="End Service"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"/>
+
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity= "center"
+        android:paddingTop="50px"
+
+        tools:context=".LinearLayout" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Sample Rate"
+            android:textColor="#ffffff"
+            android:textSize="40px"
+            android:textStyle="bold"
+            android:padding="20px"/>
+
+        <EditText
+            android:id="@+id/sample_rate"
+            android:layout_width="350px"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:inputType="textEmailAddress"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter a time between 10 and 300 seconds"
+            android:textColor="#ffffff"
+            android:textSize="10px"
+            android:textStyle="bold"
+            android:padding="10px"/>
+
+        <Button
+            android:id="@+id/changesampling"
+            android:text="Change Sampling Rate"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity= "center"
+        android:paddingTop="25px"
+
+        tools:context=".LinearLayout" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Upload Data Rate"
+            android:textColor="#ffffff"
+            android:textSize="40px"
+            android:textStyle="bold"
+            android:padding="20px"/>
+
+        <EditText
+            android:id="@+id/upload_rate"
+            android:layout_width="350px"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:inputType="textEmailAddress"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter a time between 1 and 24 hours"
+            android:textColor="#ffffff"
+            android:textSize="10px"
+            android:textStyle="bold"
+            android:padding="10px"/>
+        <Button
+            android:id="@+id/changeuploading"
+            android:text="Change Upload Rate"
+            android:layout_width="300px"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+</LinearLayout>
