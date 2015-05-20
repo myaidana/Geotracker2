@@ -97,9 +97,21 @@ public class CreateAccountActivity extends Activity {
 
                 Log.d("URL ", myURL);
                 if (mAgree.isChecked()) {
-                    CreateAccountTask task = new CreateAccountTask();
+                    if(email.length() < 4){
+                        Toast.makeText(getApplicationContext(), "Email should have at least 4 characters", Toast.LENGTH_SHORT).show();
+                    } else if(password.length() < 4){
+                        Toast.makeText(getApplicationContext(), "Password should have at least 4 characters", Toast.LENGTH_SHORT).show();
+                    } else if(question.length() < 4) {
+                        Toast.makeText(getApplicationContext(), "Question should have at least 4 characters", Toast.LENGTH_SHORT).show();
+                    }else if(answer.length() < 4) {
+                        Toast.makeText(getApplicationContext(), "Answer should have at least 4 characters", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Registration is in process...", Toast.LENGTH_SHORT).show();
+                        CreateAccountTask task = new CreateAccountTask();
+                        task.execute(new String[]{myURL});
+                    }
 
-                    task.execute(new String[]{myURL});
+
                 } else {
                     Toast.makeText(getApplicationContext(), "You must agree to the terms and" +
                             " conditions before continuing", Toast.LENGTH_SHORT).show();

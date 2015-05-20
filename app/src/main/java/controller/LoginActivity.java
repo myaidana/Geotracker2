@@ -59,11 +59,11 @@ public class LoginActivity extends Activity {
 
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        mEmail = (EditText)findViewById(R.id.name);
-        mPassword = (EditText)findViewById(R.id.password);
-        mLogin = (Button)findViewById(R.id.loginbutton);
-        mCreateAccount = (Button)findViewById(R.id.createaccountbutton);
-        mForgotPassword = (Button)findViewById(R.id.forgotpasswordbutton);
+        mEmail = (EditText) findViewById(R.id.name);
+        mPassword = (EditText) findViewById(R.id.password);
+        mLogin = (Button) findViewById(R.id.loginbutton);
+        mCreateAccount = (Button) findViewById(R.id.createaccountbutton);
+        mForgotPassword = (Button) findViewById(R.id.forgotpasswordbutton);
         mCreateAccount.setOnClickListener(new View.OnClickListener() {
 
             /**
@@ -71,7 +71,10 @@ public class LoginActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(LoginActivity.this, CreateAccountActivity.class);
+                Toast.makeText(v.getContext(), "Transferring to registration page"
+                        , Toast.LENGTH_SHORT)
+                        .show();
+                Intent i = new Intent(LoginActivity.this, CreateAccountActivity.class);
                 startActivity(i);
             }
         });
@@ -82,7 +85,10 @@ public class LoginActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                Toast.makeText(v.getContext(), "Transferring to Forgot Password page"
+                        , Toast.LENGTH_SHORT)
+                        .show();
+                Intent i = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
                 startActivity(i);
             }
         });
@@ -96,21 +102,30 @@ public class LoginActivity extends Activity {
             public void onClick(View v) {
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
-                String myURL = URL + EMAIL_URL + email + "&" + PASSWORD_URL + password;
+                String myURL;
+                if (email.length() < 4) {
+                    Toast.makeText(v.getContext(), "Email should have at least 4 characters"
+                            , Toast.LENGTH_SHORT)
+                            .show();
 
+                } else if (password.length() < 4) {
+                    Toast.makeText(v.getContext(), "Password should have at least 4 characters"
+                            , Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    myURL = URL + EMAIL_URL + email + "&" + PASSWORD_URL + password;
+                    editor.putString(Email, email);
+                    editor.putString(Password, password);
+                    editor.commit();
+                    LoginTask task = new LoginTask();
+                    task.execute(new String[]{myURL});
+                    Toast.makeText(getApplicationContext(), "Logged successfully", Toast.LENGTH_SHORT).show();
+                }
 
-                editor.putString(Email, mEmail.getText().toString().trim());
-                editor.putString(Password,  mPassword.getText().toString().trim());
-
-                editor.commit();
-
-                LoginTask task = new LoginTask();
-                task.execute(new String[]{myURL});
 
             }
         });
     }
-
 
 
     @Override
@@ -141,6 +156,7 @@ public class LoginActivity extends Activity {
             super.onPreExecute();
             //mProgressDialog = ProgressDialog.show(CreateAccountActivitywWebServices.this, "Wait", "Downloading...");
         }
+
         @Override
         protected JSONObject doInBackground(String... urls) {
             JSONObject data = new JSONObject();
@@ -180,10 +196,10 @@ public class LoginActivity extends Activity {
                 }
 
 
-
             }
             return data;
         }
+
         /**
          * On post execute method to start intent activity
          */
@@ -195,7 +211,7 @@ public class LoginActivity extends Activity {
                     Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
                 } else {
                     if (feedback.getString("result").equals("success")) {
-                        Toast.makeText(getApplicationContext(), "Welcome to Geotracker!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Welcome to GeoTracker!", Toast.LENGTH_SHORT).show();
 
                         mUserID = feedback.getString("userid");
                         editor.putString(UserUniqueID, mUserID);
