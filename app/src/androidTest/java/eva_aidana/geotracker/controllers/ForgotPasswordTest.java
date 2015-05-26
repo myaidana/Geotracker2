@@ -27,7 +27,7 @@ public class ForgotPasswordTest extends ActivityInstrumentationTestCase2<ForgotP
         solo.unlockScreen();
         solo.enterText(0, "");
         solo.clickOnButton("Submit");
-        boolean textFound = solo.searchText("Email should have at least 4 characters");
+        boolean textFound = solo.searchText("Please enter a valid email");
         assertTrue("Required fields validation failed", textFound);
     }
 
@@ -46,7 +46,7 @@ public class ForgotPasswordTest extends ActivityInstrumentationTestCase2<ForgotP
     public void testSubmitButton() {
         solo.enterText(0, "myaidana@gmail.com");
         solo.clickOnButton("Submit");
-        boolean textFound = solo.searchText("Password Reset is in process...");
+        boolean textFound = solo.searchText("An email with instructions");
         assertTrue("Password Reset failed", textFound);
     }
 

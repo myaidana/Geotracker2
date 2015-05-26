@@ -26,7 +26,7 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         solo.unlockScreen();
         solo.enterText(0,"");
         solo.clickOnButton("Login");
-        boolean textFound = solo.searchText("Email should have at least 4 characters");
+        boolean textFound = solo.searchText("Please enter a valid email");
         assertTrue("Required fields validation failed", textFound);
     }
 
@@ -45,19 +45,19 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         solo.enterText(0, "myaidana@gmail.com");
         solo.enterText(1, "password");
         solo.clickOnButton("Login");
-        boolean textFound = solo.searchText("Logged successfully");
+        boolean textFound = solo.searchText("Welcome to Geotracker");
         assertTrue("Login failed", textFound);
     }
 
     public void testCreateAccountButton(){
         solo.clickOnButton("Create Account");
-        boolean textFound = solo.searchText("Transferring to registration page");
+        boolean textFound = solo.searchText("Create Account");
         assertTrue("Registration failed", textFound);
     }
 
     public void testForgotPasswordButton(){
         solo.clickOnButton("Forgot Password");
-        boolean textFound = solo.searchText("Transferring to Forgot Password page");
+        boolean textFound = solo.searchText("Forgot Password");
         assertTrue("Forgot Password failed", textFound);
     }
 

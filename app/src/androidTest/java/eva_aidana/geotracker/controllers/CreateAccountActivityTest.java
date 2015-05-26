@@ -37,6 +37,14 @@ public class CreateAccountActivityTest extends ActivityInstrumentationTestCase2<
         assertTrue("Orientation change failed", textFound);
     }
 
+//    public void testRequiredFields() {
+//        solo.unlockScreen();
+//        solo.enterText(0, "");
+//        solo.clickOnButton("Create Account");
+//        solo.clickOnButton("Register");
+//        boolean textFound = solo.searchText("You must agree to the terms and conditions before continuing");
+//        assertTrue("Required fields validation failed", textFound);
+//    }
 
     public void testRegisterButton() {
         solo.enterText(0, "anurla92@uw.edu");
@@ -49,12 +57,6 @@ public class CreateAccountActivityTest extends ActivityInstrumentationTestCase2<
         assertTrue("Registration failed", textFound);
     }
 
-    public void testRequiredFields() {
-        solo.unlockScreen();
-        solo.enterText(0, "");
-        solo.clickOnButton("Register");
-        boolean textFound = solo.searchText("You must agree to the terms and conditions before continuing");
-        assertTrue("Required fields validation failed", textFound);
-    }
+
 
 }

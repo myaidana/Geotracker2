@@ -99,6 +99,8 @@ public class CreateAccountActivity extends Activity {
 
                 Log.d("URL ", myURL);
                 if (mAgree.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Registration is in process...", Toast.LENGTH_SHORT).show();
+
                     CreateAccountTask task = new CreateAccountTask();
 
                     task.execute(new String[]{myURL});

@@ -43,27 +43,26 @@ public class MyProfileTest extends ActivityInstrumentationTestCase2<MyProfileAct
     public void testChangeSampleRateButton() {
         solo.enterText(0, "20");
         solo.clickOnButton("Change Sampling Rate");
-        boolean textFound = solo.searchText("Sample rates is set for 20 seconds");
+        boolean textFound = solo.searchText("Sample rate changed");
         assertTrue("Change Sample Rate failed", textFound);
     }
 
     public void testChangeUploadRateButton() {
-        solo.enterText(1, "0");
+        solo.enterText(1, "2");
         solo.clickOnButton("Change Upload Rate");
-        boolean textFound = solo.searchText("Sample rates must be between 1 hour " +
-                "and 1 day");
+        boolean textFound = solo.searchText("Upload rate changed");
         assertTrue("Change Upload Rate failed", textFound);
     }
-    public void testStartServiceButton() {
-        solo.clickOnButton("Start Service");
-        boolean textFound = solo.searchText("Service started successfully");
-        assertTrue("Service Start failed", textFound);
-    }
-
-    public void testStopServiceButton() {
-        solo.clickOnButton("End Service");
-        boolean textFound = solo.searchText("Service has been stopped");
-        assertTrue("Service End failed", textFound);
-    }
+//    public void testStartServiceButton() {
+//        solo.clickOnButton("Start Service");
+//        boolean textFound = solo.searchText("Service started successfully");
+//        assertTrue("Service Start failed", textFound);
+//    }
+//
+//    public void testStopServiceButton() {
+//        solo.clickOnButton("End Service");
+//        boolean textFound = solo.searchText("Service has been stopped");
+//        assertTrue("Service End failed", textFound);
+//    }
 
 }

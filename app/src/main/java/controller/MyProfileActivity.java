@@ -34,6 +34,7 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
         OnConnectionFailedListener {
 
     private static final String TAG = "MyProfileActivity";
+    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-updates-key";
 
     private long mPollInterval;
     //public static final long FASTEST_INTERVAL = 10000;
@@ -67,6 +68,12 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_profile);
+//        if (savedInstanceState != null) {
+//            // Restore value of members from saved state
+//            mRequestingUpdates = savedInstanceState.getBoolean(REQUESTING_LOCATION_UPDATES_KEY);
+//        } else {
+//            mRequestingUpdates = false;
+//        }
 
         mSharedPreferences = getSharedPreferences(Constants.sPreferences, Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
@@ -89,19 +96,25 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
 
 
 
-        mRequestingUpdates = false;
+
+        mRequestingUpdates = mSharedPreferences.getBoolean(Constants.sServiceOn, false);
+        setupButtons();
+
+
+
+
 
         ComponentName receiver = new ComponentName(getApplicationContext(), UploadService.class);
         PackageManager pm = getApplicationContext().getPackageManager();
         pm.setComponentEnabledSetting(receiver,
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                        PackageManager.DONT_KILL_APP);
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
 
 
 
 
-
-                buildGoogleApiClient();
+        //updateValuesFromBundle(savedInstanceState);
+        buildGoogleApiClient();
 
 
         mBack.setOnClickListener(new View.OnClickListener() {
@@ -124,15 +137,16 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
             @Override
             public void onClick(View v) {
 
-                //if(!mRequestingUpdates) {
-                  //  mRequestingUpdates = true;
-                //UploadService.setServiceAlarm(getApplicationContext(), true);
+                if(!mRequestingUpdates) {
+                    mRequestingUpdates = true;
+                    Log.d("MYPROFILE", "requesting updates from start update = " + mRequestingUpdates);
+                    //UploadService.setServiceAlarm(getApplicationContext(), true);
                     startUploadService();
                     startLocationUpdates();
-
+                    setupButtons();
 
                     Log.d(TAG, "poll interval " + mPollInterval);
-            //    }
+                }
 
 
             }
@@ -144,12 +158,14 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
             @Override
             public void onClick(View v) {
 
-                //if(mRequestingUpdates) {
-                   // mRequestingUpdates = false;
+
+                if(mRequestingUpdates) {
+                    mRequestingUpdates = false;
                     stopLocationUpdates();
                     stopUploadService();
+                    setupButtons();
 
-                //}
+                }
 
 
             }
@@ -160,9 +176,12 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
 
             @Override
             public void onClick(View v) {
+                if(mSampleRate.getText().toString().length()>1 && mSampleRate.getText().toString().length()<4){
+                    mFastPollInterval = Long.parseLong(mSampleRate.getText().toString());
+                }
 
-                mFastPollInterval = Long.parseLong(mSampleRate.getText().toString());
                 if(mFastPollInterval >= 10 && mFastPollInterval <= 300) {
+
                     mFastPollInterval = mFastPollInterval * 1000;
                     Log.d(TAG, "Fast Poll Interval " + mFastPollInterval);
                     mPollInterval = mFastPollInterval * 2;
@@ -170,10 +189,17 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
                     //mEditor.putLong("fast_poll_interval", mFastPollInterval);
                     mEditor.commit();
 
-                    stopLocationUpdates();
-                    mLocationRequest.setInterval(mPollInterval);
-                    mLocationRequest.setFastestInterval(mFastPollInterval);
-                    startLocationUpdates();
+                    if(mRequestingUpdates) {
+                        stopLocationUpdates();
+                        mLocationRequest.setInterval(mPollInterval);
+                        mLocationRequest.setFastestInterval(mFastPollInterval);
+                        startLocationUpdates();
+                    } else {
+                        mLocationRequest.setInterval(mPollInterval);
+                        mLocationRequest.setFastestInterval(mFastPollInterval);
+
+                    }
+                    Toast.makeText(getApplicationContext(), "Sample rate changed", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "You must enter a time between 10 " +
@@ -194,28 +220,34 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
             public void onClick(View v) {
 
                 uploadInterval = Long.parseLong(mUploadRate.getText().toString());
-                if(uploadInterval >= 1 && uploadInterval <= 24) {
+                //if(uploadInterval >= 1 && uploadInterval <= 24) {
 
-                    Log.d(TAG, "Upload Interval " + uploadInterval);
+                Log.d(TAG, "Upload Interval " + uploadInterval);
 
-                    mEditor.putLong(mEmail + " " + Constants.sUploadRate, uploadInterval);
-                    //mEditor.putLong("fast_poll_interval", mFastPollInterval);
-                    mEditor.commit();
+                mEditor.putLong(mEmail + " " + Constants.sUploadRate, uploadInterval);
+                //mEditor.putLong("fast_poll_interval", mFastPollInterval);
+                mEditor.commit();
 
-                    //UploadService.setServiceAlarm(getApplicationContext(), false);
+                //UploadService.setServiceAlarm(getApplicationContext(), false);
+                if(mRequestingUpdates) {
                     stopUploadService();
-                    UploadService.setUploadPoll(uploadInterval);
+
                     startUploadService();
-                    //UploadService.setServiceAlarm(getApplicationContext(), true);
+                } else {
+                    UploadService.setUploadPoll(uploadInterval);
 
                 }
-                else {
-                    Toast.makeText(getApplicationContext(), "You must enter a time between 1 " +
-                            "and 24 hours", Toast.LENGTH_SHORT).show();
-                }
+
+                //UploadService.setServiceAlarm(getApplicationContext(), true);
+
+//                }
+//                else {
+//                    Toast.makeText(getApplicationContext(), "You must enter a time between 1 " +
+//                            "and 24 hours", Toast.LENGTH_SHORT).show();
+//                }
 
 
-
+                Toast.makeText(getApplicationContext(), "Upload rate changed", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -226,6 +258,31 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
 
 
     }
+    private void setupButtons() {
+        if(mRequestingUpdates) {
+            mStartUpdates.setEnabled(false);
+            mStopUpdates.setEnabled(true);
+
+        } else {
+            mStopUpdates.setEnabled(false);
+            mStartUpdates.setEnabled(true);
+        }
+    }
+//    private void updateValuesFromBundle(Bundle savedInstanceState) {
+//        Log.i(TAG, "Updating values from bundle");
+//        if (savedInstanceState != null) {
+//            // Update the value of mRequestingLocationUpdates from the Bundle, and make sure that
+//            // the Start Updates and Stop Updates buttons are correctly enabled or disabled.
+//            if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+//                mRequestingUpdates = savedInstanceState.getBoolean(
+//                        REQUESTING_LOCATION_UPDATES_KEY);
+//                setupButtons();
+//                Log.d("MYPROFILE", "requesting updates from update bundle = " + mRequestingUpdates);
+//
+//            }
+//        }
+//    }
+
 
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -281,9 +338,9 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
 //                activeNetwork.isConnectedOrConnecting();
 
         //if(isCharging && isConnected) {
-            long pollRate = mSharedPreferences.getLong(mEmail + " " + Constants.sSampleRate, 0);
-            UploadService.setUploadPoll(pollRate);
-            UploadService.setServiceAlarm(getApplicationContext(), true);
+        long pollRate = mSharedPreferences.getLong(mEmail + " " + Constants.sUploadRate, 0);
+        UploadService.setUploadPoll(pollRate);
+        UploadService.setServiceAlarm(getApplicationContext(), true);
         //} else {
 //            Toast.makeText(getApplicationContext(), "Your phone must be plugged in and" +
 //                    "connected to a network in order to allow the upload portion of this " +
@@ -306,8 +363,32 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
 
 
         Log.d(TAG, "on start requesting updates is " + mRequestingUpdates);
+        //mRequestingUpdates = mSharedPreferences.getBoolean(Constants.sServiceOn, false);
         mGoogleApiClient.connect();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+
+        Log.d(TAG, "on stop requesting updates is " + mRequestingUpdates);
+        mEditor.putBoolean(Constants.sServiceOn, mRequestingUpdates);
+        mEditor.commit();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+
+        Log.d(TAG, "on pause requesting updates is " + mRequestingUpdates);
+        mEditor.putBoolean(Constants.sServiceOn, mRequestingUpdates);
+        mEditor.commit();
+        mGoogleApiClient.connect();
+    }
+
 
 
 
@@ -339,5 +420,14 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
 //        mLocation = location;
 //        Log.d(TAG, "the location " + mLocation);
 //
+//    }
+//    @Override
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//        Log.d(TAG, "on saveinstancestate requesting updates is " + mRequestingUpdates);
+//
+//
+//        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingUpdates);
+//
+//        super.onSaveInstanceState(savedInstanceState);
 //    }
 }
