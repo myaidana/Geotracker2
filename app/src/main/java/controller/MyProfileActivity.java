@@ -17,7 +17,8 @@ import reception.UploadService;
 
 /**
  * Created by erevear on 5/16/15.
- */
+ * Edited by anurala92
+ * */
 public class MyProfileActivity extends Activity {
 
 
@@ -91,11 +92,10 @@ public class MyProfileActivity extends Activity {
                 NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
                 boolean isConnected = activeNetwork != null &&
                         activeNetwork.isConnectedOrConnecting();
-
                 if(isConnected == true) {
+                    Toast.makeText(getApplicationContext(), "Service started successfully", Toast.LENGTH_SHORT).show();
                     SampleManager.startIntent(v.getContext(), true);
                     UploadService.setServiceAlarm(v.getContext(), true);
-
                 } else {
                     Toast.makeText(getApplicationContext(), "Connect to a network to start service", Toast.LENGTH_SHORT).show();
                 }
@@ -113,7 +113,7 @@ public class MyProfileActivity extends Activity {
 
                 SampleManager.startIntent(v.getContext(), false);
                 UploadService.setServiceAlarm(v.getContext(), false);
-
+                Toast.makeText(getApplicationContext(), "Service has been stopped", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -130,12 +130,11 @@ public class MyProfileActivity extends Activity {
                 sampleRate = Integer.parseInt(mSampleRate.getText().toString());
 
                 if(sampleRate >= 10 && sampleRate <= 300 ) {
+                    Toast.makeText(getApplicationContext(), "Sample rates is set for "+sampleRate + " seconds", Toast.LENGTH_SHORT).show();
                     sampleRate = sampleRate * 1000;
                     SampleManager.startIntent(v.getContext(), false);
                     SampleManager.changePolling(sampleRate);
                     SampleManager.startIntent(v.getContext(), true);
-
-                    //editor.putInt(mPollTime, sampleRate);
                 } else {
                     Toast.makeText(getApplicationContext(), "Sample rates must be between 10 seconds " +
                             "and 300 seconds", Toast.LENGTH_LONG).show();
@@ -161,7 +160,7 @@ public class MyProfileActivity extends Activity {
                     //editor.putInt(mPollTime, sampleRate);
                 } else {
                     Toast.makeText(getApplicationContext(), "Sample rates must be between 1 hour " +
-                            "and 1 day", Toast.LENGTH_LONG).show();
+                            "and 1 day", Toast.LENGTH_SHORT).show();
                 }
 
             }

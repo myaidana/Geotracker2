@@ -48,39 +48,26 @@ public class FilterDatesActivity extends Activity {
     static final int END_DATE_DIALOG_ID = 2;
     static final int START_TIME_DIALOG_ID = 3;
     static final int END_TIME_DIALOG_ID = 4;
-
     private Button mSubmit;
-
-
-
     private Button mStartDate;
     private Button mStartTime;
-
     private Button mEndDate;
     private Button mEndTime;
-
     private String mStartFilter;
     private String mEndFilter;
-
     private Button mMyProfile;
-
     private DatePicker datePicker;
     private Calendar calendar;
     private TextView dateView;
     private int mStartYear, mStartMonth, mStartDay, mStartHour, mStartMinute;
     private int mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute;
-
-    SharedPreferences sharedpreferences;
-    SharedPreferences.Editor editor;
-
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences.Editor editor;
     private String MyPREFERENCES = "myPrefs";
     private String UserUniqueID = "userUniqueID";
-
     private String mUniqueID;
-
     private TextView mSeeStartDate;
     private TextView mSeeStartTime;
-
     private TextView mSeeEndDate;
     private TextView mSeeEndTime;
 
@@ -90,44 +77,38 @@ public class FilterDatesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filter_data);
-
         mSubmit = (Button)findViewById(R.id.submitfilter);
-
-
         mStartDate = (Button)findViewById(R.id.pickstartdate);
         mStartTime = (Button)findViewById(R.id.pickstarttime);
-
         mEndDate = (Button)findViewById(R.id.pickenddate);
         mEndTime = (Button)findViewById(R.id.pickendtime);
-
         mSeeStartDate = (TextView)findViewById(R.id.chosenstartdate);
         mSeeStartTime = (TextView)findViewById(R.id.chosenstarttime);
-
         mSeeEndDate = (TextView)findViewById(R.id.chosenenddate);
         mSeeEndTime = (TextView)findViewById(R.id.chosenendtime);
-
         mMyProfile = (Button)findViewById(R.id.myprofile);
-
-
         calendar = Calendar.getInstance();
         mStartYear = calendar.get(Calendar.YEAR);
         mStartMonth = calendar.get(Calendar.MONTH);
         mStartDay = calendar.get(Calendar.DAY_OF_MONTH);
         mStartHour = calendar.get(Calendar.HOUR_OF_DAY);
         mStartMinute = calendar.get(Calendar.MINUTE);
-
         mEndYear = calendar.get(Calendar.YEAR);
         mEndMonth = calendar.get(Calendar.MONTH);
         mEndDay = calendar.get(Calendar.DAY_OF_MONTH);
         mEndHour = calendar.get(Calendar.HOUR_OF_DAY);
         mEndMinute = calendar.get(Calendar.MINUTE);
-
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
         mUniqueID = sharedpreferences.getString(UserUniqueID, null);
-
-
-
+        //if device was rotated
+        if(savedInstanceState != null)
+        {
+            mSeeStartDate.setText(savedInstanceState.getString("start_date"));
+            mSeeStartTime.setText(savedInstanceState.getString("start_time"));
+            mSeeEndTime.setText(savedInstanceState.getString("end_time"));
+            mSeeEndDate.setText(savedInstanceState.getString("end_date"));
+        }
         mStartDate.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -190,7 +171,6 @@ public class FilterDatesActivity extends Activity {
             String endDate;
             long startStamp;
             long endStamp;
-
             String myURL;
 
 
@@ -215,10 +195,15 @@ public class FilterDatesActivity extends Activity {
 
 
 
-
-
     }
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("start_date", mSeeStartDate.getText().toString());
+        outState.putString("start_time", mSeeStartTime.getText().toString());
+        outState.putString("end_time", mSeeEndTime.getText().toString());
+        outState.putString("end_time", mSeeEndDate.getText().toString());
+    }
 
     private long makeTimeStamp(String date) {
         Log.d("FILTERDATES", date);
@@ -232,7 +217,6 @@ public class FilterDatesActivity extends Activity {
         }
         long timestamp = theDate.getTime()/1000;
         return timestamp;
-
     }
 
     @Override
@@ -280,9 +264,6 @@ public class FilterDatesActivity extends Activity {
 
 
             // set selected date into textview
-
-
-
         }
     };
 
@@ -302,7 +283,6 @@ public class FilterDatesActivity extends Activity {
             date = mEndYear + "-" + mEndMonth + "-" + mEndDay;
             mSeeEndDate.setText(date);
 
-
         }
     };
 
@@ -316,9 +296,6 @@ public class FilterDatesActivity extends Activity {
                     mStartMinute = selectedMinute;
                     time = mStartHour + ":" + mStartMinute;
                     mSeeStartTime.setText(time);
-
-
-
                 }
             };
 
