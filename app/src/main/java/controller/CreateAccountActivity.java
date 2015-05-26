@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import eva_aidana.geotracker.R;
+import model.Constants;
 
 /**
  * Created by erevear on 5/15/15.
@@ -49,11 +50,12 @@ public class CreateAccountActivity extends Activity {
     private CheckBox mAgree;
     private TextView mAgreement;
 
-    SharedPreferences sharedpreferences;
-    SharedPreferences.Editor editor;
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
 
-    private String MyPREFERENCES = "myPrefs";
-    private String mPollTime = "myPollTime";
+    private String mEmail;
+
+
 
 
     @Override
@@ -65,8 +67,8 @@ public class CreateAccountActivity extends Activity {
 
         task.execute(new String[]{AGREEMENT_URL});
 
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
+        mSharedPreferences = getSharedPreferences(Constants.sPreferences, Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
 
         mUserEmail = (EditText) findViewById(R.id.useremail);
         mUserPassword = (EditText) findViewById(R.id.userpassword);
@@ -86,31 +88,20 @@ public class CreateAccountActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                String email = mUserEmail.getText().toString().trim();
+                mEmail = mUserEmail.getText().toString().trim();
                 String password = mUserPassword.getText().toString().trim();
                 String question = mUserQuestion.getText().toString().trim().replace(" ", "%20").replace("?", "%3F");
                 String answer = mUserAnswer.getText().toString().trim().replace(" ", "%20");
 
 
-                String myURL = URL + EMAIL_URL + email + "&" + PASSWORD_URL + password + "&" + QUESTION_URL + question + "&" +
+                String myURL = URL + EMAIL_URL + mEmail + "&" + PASSWORD_URL + password + "&" + QUESTION_URL + question + "&" +
                         ANSWER_URL + answer;
 
                 Log.d("URL ", myURL);
                 if (mAgree.isChecked()) {
-                    if(email.length() < 4){
-                        Toast.makeText(getApplicationContext(), "Email should have at least 4 characters", Toast.LENGTH_SHORT).show();
-                    } else if(password.length() < 4){
-                        Toast.makeText(getApplicationContext(), "Password should have at least 4 characters", Toast.LENGTH_SHORT).show();
-                    } else if(question.length() < 4) {
-                        Toast.makeText(getApplicationContext(), "Question should have at least 4 characters", Toast.LENGTH_SHORT).show();
-                    }else if(answer.length() < 4) {
-                        Toast.makeText(getApplicationContext(), "Answer should have at least 4 characters", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(getApplicationContext(), "Registration is in process...", Toast.LENGTH_SHORT).show();
-                        CreateAccountTask task = new CreateAccountTask();
-                        task.execute(new String[]{myURL});
-                    }
+                    CreateAccountTask task = new CreateAccountTask();
 
+                    task.execute(new String[]{myURL});
 
                 } else {
                     Toast.makeText(getApplicationContext(), "You must agree to the terms and" +
@@ -201,8 +192,10 @@ public class CreateAccountActivity extends Activity {
 
                     }
                     if (feedback.getString("result").equals("success")) {
-                        editor.putInt(mPollTime, 6000);
-                        editor.commit();
+                        mEditor.putLong(mEmail + " " + Constants.sSampleRate, 60000);
+                        mEditor.putLong(mEmail + " " + Constants.sUploadRate, 60000);
+                        mEditor.commit();
+                        Log.d("CREATEACCOUNT", mEmail);
                         //startCollectData();
                         //Log.i("Success", "starts collecting data");
                         Toast.makeText(getApplicationContext(), feedback.getString("message"), Toast.LENGTH_LONG).show();

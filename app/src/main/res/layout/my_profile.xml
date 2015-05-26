@@ -16,6 +16,7 @@
         <Button
             android:id="@+id/back_to_filter"
             android:text="Back"
+            android:textColor="#ffffff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -81,14 +82,14 @@
             android:layout_height="wrap_content"
             android:text="Enter a time between 10 and 300 seconds"
             android:textColor="#ffffff"
-            android:textSize="30px"
+            android:textSize="25px"
             android:textStyle="bold"
             android:padding="10px"/>
 
         <Button
             android:id="@+id/changesampling"
             android:text="Change Sampling Rate"
-            android:layout_width="660px"
+            android:layout_width="300px"
             android:layout_height="wrap_content"/>
 
 
@@ -126,13 +127,13 @@
             android:layout_height="wrap_content"
             android:text="Enter a time between 1 and 24 hours"
             android:textColor="#ffffff"
-            android:textSize="30px"
+            android:textSize="25px"
             android:textStyle="bold"
             android:padding="10px"/>
         <Button
             android:id="@+id/changeuploading"
             android:text="Change Upload Rate"
-            android:layout_width="660px"
+            android:layout_width="300px"
             android:layout_height="wrap_content"/>
 
 

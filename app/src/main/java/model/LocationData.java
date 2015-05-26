@@ -16,9 +16,9 @@ public class LocationData implements Serializable {
     private static final String ID = "id", LATITUDE = "latitude", LONGITUDE = "longitude",
             SPEED = "speed", HEADING = "heading", TIMESTAMP = "timestamp";
 
-    public LocationData(double latitude, double longitude, double speed, String heading, String timestamp) {
+    public LocationData(double latitude, double longitude, double speed, String heading, String timestamp){
         //mySourceID = id;
-        setMyLatitude(latitude);
+        myLatitude = latitude;
         myLongitude = longitude;
         mySpeed = speed;
         myHeading = heading;
@@ -30,45 +30,48 @@ public class LocationData implements Serializable {
         return mySourceID;
     }
 
+    public void setMySourceID(String mySourceID) {
+        this.mySourceID = mySourceID;
+    }
 
     public double getMyLatitude() {
         return myLatitude;
     }
 
-    public void setMyLatitude(double latitude) {
-        myLatitude = latitude;
+    public void setMyLatitude(double myLatitude) {
+        this.myLatitude = myLatitude;
     }
 
     public double getMyLongitude() {
         return myLongitude;
     }
 
-    public void setMyLongitude(double longitude) {
-        myLongitude = longitude;
+    public void setMyLongitude(double myLongitude) {
+        this.myLongitude = myLongitude;
     }
 
     public double getMySpeed() {
         return mySpeed;
     }
 
-    public void setMySpeed(double speed) {
-        mySpeed = speed;
+    public void setMySpeed(double mySpeed) {
+        this.mySpeed = mySpeed;
     }
 
     public String getMyHeading() {
         return myHeading;
     }
 
-    public void setMyHeading(String heading) {
-        myHeading = heading;
+    public void setMyHeading(String myHeading) {
+        this.myHeading = myHeading;
     }
 
     public String getMyTimestamp() {
         return myTimestamp;
     }
 
-    public void setMyTimestamp(String timestamp) {
-        myTimestamp = timestamp;
+    public void setMyTimestamp(String myTimestamp) {
+        this.myTimestamp = myTimestamp;
     }
 
     @Override

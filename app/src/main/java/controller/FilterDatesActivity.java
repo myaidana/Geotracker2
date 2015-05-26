@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import eva_aidana.geotracker.R;
+import model.Constants;
 import model.LocationData;
 import model.LocationLog;
 
@@ -48,26 +49,38 @@ public class FilterDatesActivity extends Activity {
     static final int END_DATE_DIALOG_ID = 2;
     static final int START_TIME_DIALOG_ID = 3;
     static final int END_TIME_DIALOG_ID = 4;
+
     private Button mSubmit;
+    private Button mLogout;
+
+
+
     private Button mStartDate;
     private Button mStartTime;
+
     private Button mEndDate;
     private Button mEndTime;
+
     private String mStartFilter;
     private String mEndFilter;
+
     private Button mMyProfile;
+
     private DatePicker datePicker;
     private Calendar calendar;
     private TextView dateView;
     private int mStartYear, mStartMonth, mStartDay, mStartHour, mStartMinute;
     private int mEndYear, mEndMonth, mEndDay, mEndHour, mEndMinute;
-    private SharedPreferences sharedpreferences;
-    private SharedPreferences.Editor editor;
-    private String MyPREFERENCES = "myPrefs";
-    private String UserUniqueID = "userUniqueID";
+
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
+
+
     private String mUniqueID;
+
     private TextView mSeeStartDate;
     private TextView mSeeStartTime;
+
     private TextView mSeeEndDate;
     private TextView mSeeEndTime;
 
@@ -77,38 +90,45 @@ public class FilterDatesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filter_data);
+
         mSubmit = (Button)findViewById(R.id.submitfilter);
+        mLogout = (Button)findViewById(R.id.logout);
+
+
         mStartDate = (Button)findViewById(R.id.pickstartdate);
         mStartTime = (Button)findViewById(R.id.pickstarttime);
+
         mEndDate = (Button)findViewById(R.id.pickenddate);
         mEndTime = (Button)findViewById(R.id.pickendtime);
+
         mSeeStartDate = (TextView)findViewById(R.id.chosenstartdate);
         mSeeStartTime = (TextView)findViewById(R.id.chosenstarttime);
+
         mSeeEndDate = (TextView)findViewById(R.id.chosenenddate);
         mSeeEndTime = (TextView)findViewById(R.id.chosenendtime);
+
         mMyProfile = (Button)findViewById(R.id.myprofile);
+
+
         calendar = Calendar.getInstance();
         mStartYear = calendar.get(Calendar.YEAR);
         mStartMonth = calendar.get(Calendar.MONTH);
         mStartDay = calendar.get(Calendar.DAY_OF_MONTH);
         mStartHour = calendar.get(Calendar.HOUR_OF_DAY);
         mStartMinute = calendar.get(Calendar.MINUTE);
+
         mEndYear = calendar.get(Calendar.YEAR);
         mEndMonth = calendar.get(Calendar.MONTH);
         mEndDay = calendar.get(Calendar.DAY_OF_MONTH);
         mEndHour = calendar.get(Calendar.HOUR_OF_DAY);
         mEndMinute = calendar.get(Calendar.MINUTE);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
-        mUniqueID = sharedpreferences.getString(UserUniqueID, null);
-        //if device was rotated
-        if(savedInstanceState != null)
-        {
-            mSeeStartDate.setText(savedInstanceState.getString("start_date"));
-            mSeeStartTime.setText(savedInstanceState.getString("start_time"));
-            mSeeEndTime.setText(savedInstanceState.getString("end_time"));
-            mSeeEndDate.setText(savedInstanceState.getString("end_date"));
-        }
+
+        mSharedPreferences = getSharedPreferences(Constants.sPreferences, Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
+        mUniqueID = mSharedPreferences.getString(Constants.sID, null);
+
+
+
         mStartDate.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -171,6 +191,7 @@ public class FilterDatesActivity extends Activity {
             String endDate;
             long startStamp;
             long endStamp;
+
             String myURL;
 
 
@@ -192,18 +213,27 @@ public class FilterDatesActivity extends Activity {
 
         });
 
+        mLogout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+               mEditor.putString(Constants.sLoggedIn, "false");
+               mEditor.commit();
+               Intent i= new Intent(FilterDatesActivity.this, LoginActivity.class);
+               startActivity(i);
+
+            }
+
+        });
+
+
+
 
 
 
     }
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("start_date", mSeeStartDate.getText().toString());
-        outState.putString("start_time", mSeeStartTime.getText().toString());
-        outState.putString("end_time", mSeeEndTime.getText().toString());
-        outState.putString("end_time", mSeeEndDate.getText().toString());
-    }
+
 
     private long makeTimeStamp(String date) {
         Log.d("FILTERDATES", date);
@@ -217,6 +247,7 @@ public class FilterDatesActivity extends Activity {
         }
         long timestamp = theDate.getTime()/1000;
         return timestamp;
+
     }
 
     @Override
@@ -264,6 +295,9 @@ public class FilterDatesActivity extends Activity {
 
 
             // set selected date into textview
+
+
+
         }
     };
 
@@ -277,11 +311,12 @@ public class FilterDatesActivity extends Activity {
         public void onDateSet(DatePicker view, int selectedYear,
                               int selectedMonth, int selectedDay) {
             mEndYear = selectedYear;
-            mEndMonth = selectedMonth;
+            mEndMonth = selectedMonth + 1;
             mEndDay = selectedDay;
 
             date = mEndYear + "-" + mEndMonth + "-" + mEndDay;
             mSeeEndDate.setText(date);
+
 
         }
     };
@@ -296,6 +331,9 @@ public class FilterDatesActivity extends Activity {
                     mStartMinute = selectedMinute;
                     time = mStartHour + ":" + mStartMinute;
                     mSeeStartTime.setText(time);
+
+
+
                 }
             };
 
@@ -316,6 +354,17 @@ public class FilterDatesActivity extends Activity {
             };
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+       String userStatus = mSharedPreferences.getString(Constants.sLoggedIn, "false");
+       if(userStatus.equals("false")) {
+           Intent i= new Intent(FilterDatesActivity.this, LoginActivity.class);
+           startActivity(i);
+
+       }
+    }
 
     private class GetLocationDataTask extends AsyncTask<String, Void, JSONObject> {
         LocationLog log = new LocationLog();
@@ -399,15 +448,20 @@ public class FilterDatesActivity extends Activity {
                         JSONArray points = feedback.getJSONArray("points");
                         for(int i = 0; i < points.length(); i++) {
                             JSONObject point = points.getJSONObject(i);
-                            long lat = point.getLong("lat");
-                            long lon = point.getLong("lon");
+                            double latitude = point.getDouble("lat");
+
+                            //double lat = Double.parseDouble(latitude);
+                            Log.d("FILTERDATES", "points latitude: " + latitude);
+
+                            double lon = point.getDouble("lon");
+                            Log.d("FILTERDATES", "points longitude: " + lon);
                             String heading = point.getString("heading");
                             long speed = point.getInt("speed");
                             String time = point.getString("time");
-                            LocationData loc = new LocationData(lat, lon, speed,
+                            LocationData loc = new LocationData(latitude, lon, speed,
                                     heading, time);
                             log.addLocation(loc);
-                            Log.d("FILTERDATES", "points: " + lat);
+
                         }
 
                         Intent i = new Intent(FilterDatesActivity.this, DisplayDataActivity.class);

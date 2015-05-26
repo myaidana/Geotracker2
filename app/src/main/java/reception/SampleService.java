@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.location.LocationManager;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.sql.SQLException;
@@ -13,38 +13,38 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import data.LocationDB;
+import model.Constants;
 
 /**
  * Created by erevear on 5/16/15.
  */
 public class SampleService extends IntentService {
 
-    LocationDB db;
+    LocationDB mDB;
     String mUniqueID;
 
 
-    SharedPreferences sharedpreferences;
-    SharedPreferences.Editor editor;
+    SharedPreferences mSharedPreferences;
+    SharedPreferences.Editor mEditor;
 
 
 
-    private String MyPREFERENCES = "myPrefs";
-    private String UserUniqueID = "userUniqueID";
+
     /**
      * Constructor
      */
     public SampleService() {
         super("SampleService");
-        db = new LocationDB(this);
+        mDB = new LocationDB(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 //        db = new LocationDB(this);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
-        mUniqueID = sharedpreferences.getString(UserUniqueID, null);
+        mSharedPreferences = getSharedPreferences(Constants.sPreferences, Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
+        mUniqueID = mSharedPreferences.getString(Constants.sID, null);
         Log.d("USER", mUniqueID);
         //Log.d("INTENT", "intent " + intent.toString());
 
@@ -57,15 +57,23 @@ public class SampleService extends IntentService {
      */
     @Override
     public void onHandleIntent(Intent intent) {
-
-        // mUniqueID = intent.getStringExtra("userid");
-        Location loc = (Location)intent.getParcelableExtra(LocationManager.KEY_LOCATION_CHANGED);
-        if(loc != null){
-            onLocationReceived(loc);
-            Log.d("LOCATION", loc.toString());
+        Bundle bundle = intent.getExtras();
 
 
+
+        if (bundle == null) {
+            return;
         }
+
+        Location location = bundle.getParcelable("com.google.android.location.LOCATION");
+
+        if (location == null) {
+            return;
+        }
+
+        Log.d("LocationService", "Location " + location);
+        onLocationReceived(location);
+
     }
     /**
      * On location received method to update database
@@ -80,7 +88,7 @@ public class SampleService extends IntentService {
         Date date = new Date();
         Timestamp time = new Timestamp(date.getTime());
         try {
-            db.insert(mUniqueID, location.getLatitude(), location.getLongitude(), location.getSpeed(), location.getBearing());
+            mDB.insert(mUniqueID, location.getLatitude(), location.getLongitude(), location.getSpeed(), location.getBearing());
 
         } catch (SQLException e){
             e.printStackTrace();
@@ -94,8 +102,8 @@ public class SampleService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!db.equals(null)) {
-            db.close();
+        if (!mDB.equals(null)) {
+            mDB.close();
         }
     }
 

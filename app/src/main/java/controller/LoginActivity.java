@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import eva_aidana.geotracker.R;
+import model.Constants;
 
 
 public class LoginActivity extends Activity {
@@ -39,16 +40,14 @@ public class LoginActivity extends Activity {
     Button mCreateAccount;
     Button mForgotPassword;
 
-    private String MyPREFERENCES = "myPrefs";
-    private String Email = "emailKey";
-    private String Password = "passwordKey";
-    private String UserUniqueID = "userUniqueID";
+
 
     private String mUserID;
+    private String mUserEmail;
 
 
-    SharedPreferences sharedpreferences;
-    SharedPreferences.Editor editor;
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
 
 //    private SampleManager sampleManager;
 
@@ -57,13 +56,15 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
-        mEmail = (EditText) findViewById(R.id.name);
-        mPassword = (EditText) findViewById(R.id.password);
-        mLogin = (Button) findViewById(R.id.loginbutton);
-        mCreateAccount = (Button) findViewById(R.id.createaccountbutton);
-        mForgotPassword = (Button) findViewById(R.id.forgotpasswordbutton);
+        mSharedPreferences = getSharedPreferences(Constants.sPreferences, Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
+
+        mEmail = (EditText)findViewById(R.id.name);
+        mPassword = (EditText)findViewById(R.id.password);
+        mLogin = (Button)findViewById(R.id.loginbutton);
+        mCreateAccount = (Button)findViewById(R.id.createaccountbutton);
+        mForgotPassword = (Button)findViewById(R.id.forgotpasswordbutton);
+
         mCreateAccount.setOnClickListener(new View.OnClickListener() {
 
             /**
@@ -71,13 +72,11 @@ public class LoginActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Transferring to registration page"
-                        , Toast.LENGTH_SHORT)
-                        .show();
-                Intent i = new Intent(LoginActivity.this, CreateAccountActivity.class);
+                Intent i= new Intent(LoginActivity.this, CreateAccountActivity.class);
                 startActivity(i);
             }
         });
+
         mForgotPassword.setOnClickListener(new View.OnClickListener() {
 
             /**
@@ -85,10 +84,7 @@ public class LoginActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Transferring to Forgot Password page"
-                        , Toast.LENGTH_SHORT)
-                        .show();
-                Intent i = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                Intent i= new Intent(LoginActivity.this, ForgotPasswordActivity.class);
                 startActivity(i);
             }
         });
@@ -100,32 +96,23 @@ public class LoginActivity extends Activity {
              */
             @Override
             public void onClick(View v) {
-                String email = mEmail.getText().toString().trim();
+                mUserEmail = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
-                String myURL;
-                if (email.length() < 4) {
-                    Toast.makeText(v.getContext(), "Email should have at least 4 characters"
-                            , Toast.LENGTH_SHORT)
-                            .show();
+                String myURL = URL + EMAIL_URL + mUserEmail + "&" + PASSWORD_URL + password;
 
-                } else if (password.length() < 4) {
-                    Toast.makeText(v.getContext(), "Password should have at least 4 characters"
-                            , Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    myURL = URL + EMAIL_URL + email + "&" + PASSWORD_URL + password;
-                    editor.putString(Email, email);
-                    editor.putString(Password, password);
-                    editor.commit();
-                    LoginTask task = new LoginTask();
-                    task.execute(new String[]{myURL});
-                    Toast.makeText(getApplicationContext(), "Logged successfully", Toast.LENGTH_SHORT).show();
-                }
 
+//                mEditor.putString(Constants.sEmail, mEmail.getText().toString().trim());
+//                //editor.putString(Password,  mPassword.getText().toString().trim());
+//
+//                mEditor.commit();
+
+                LoginTask task = new LoginTask();
+                task.execute(new String[]{myURL});
 
             }
         });
     }
+
 
 
     @Override
@@ -156,7 +143,6 @@ public class LoginActivity extends Activity {
             super.onPreExecute();
             //mProgressDialog = ProgressDialog.show(CreateAccountActivitywWebServices.this, "Wait", "Downloading...");
         }
-
         @Override
         protected JSONObject doInBackground(String... urls) {
             JSONObject data = new JSONObject();
@@ -196,10 +182,10 @@ public class LoginActivity extends Activity {
                 }
 
 
+
             }
             return data;
         }
-
         /**
          * On post execute method to start intent activity
          */
@@ -211,11 +197,14 @@ public class LoginActivity extends Activity {
                     Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
                 } else {
                     if (feedback.getString("result").equals("success")) {
-                        Toast.makeText(getApplicationContext(), "Welcome to GeoTracker!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Welcome to Geotracker!", Toast.LENGTH_SHORT).show();
 
                         mUserID = feedback.getString("userid");
-                        editor.putString(UserUniqueID, mUserID);
-                        editor.commit();
+
+                        mEditor.putString(Constants.sEmail, mUserEmail);
+                        mEditor.putString(Constants.sID, mUserID);
+                        mEditor.putString(Constants.sLoggedIn, "true");
+                        mEditor.commit();
 //                        sampleManager = new SampleManager(getApplicationContext(), mUserID);
 //                        sampleManager.startIntent();
 

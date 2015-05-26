@@ -100,7 +100,7 @@
         <Button
             android:id="@+id/loginbutton"
             android:text="Login"
-            android:layout_width="350px"
+            android:layout_width="200px"
             android:layout_height="wrap_content"/>
 
 
@@ -120,7 +120,7 @@
         <Button
             android:id="@+id/createaccountbutton"
             android:text="Create Account"
-            android:layout_width="350px"
+            android:layout_width="300px"
             android:layout_height="wrap_content"/>
 
 
@@ -140,7 +140,7 @@
         <Button
             android:id="@+id/forgotpasswordbutton"
             android:text="Forgot Password"
-            android:layout_width="350px"
+            android:layout_width="300px"
             android:layout_height="wrap_content"/>
 
 

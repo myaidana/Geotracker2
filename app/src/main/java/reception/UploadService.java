@@ -5,8 +5,13 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import data.LocationDB;
+import model.Constants;
 
 /**
  * Created by erevear on 5/16/15.
@@ -31,7 +37,12 @@ public class UploadService extends IntentService {
     private LocationDB db;
     private static final String URL = "http://450.atwebpages.com/logAdd.php";
     private static final String AND = "&";
-    private static long mPollInterval = 60000;
+    private static long mPollInterval;
+
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
+
+    private String mEmail;
 
 
     /**
@@ -42,43 +53,80 @@ public class UploadService extends IntentService {
     public UploadService() {
         super("UploadService");
         db = new LocationDB(this);
+
+
         //mPollInterval = 60000;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        Log.i("UPLOADRECEIVER", "service starting");
+        //Log.i("UPLOADRECEIVER", "service starting");
+        mSharedPreferences = getSharedPreferences(Constants.sPreferences, Context.MODE_PRIVATE);
+        mEditor = mSharedPreferences.edit();
+        mEmail = mSharedPreferences.getString(Constants.sEmail, null);
+        mPollInterval = mSharedPreferences.getLong(mEmail + " " + Constants.sUploadRate, 0);
+//
+
+        //Log.d("UPLOADSERVICE", mEmail);
+
+        Log.d("UPLOADSERVICE", "poll interval = " + mPollInterval);
 
         return START_STICKY;
     }
 
+    private boolean checkNetwork() {
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
+        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                status == BatteryManager.BATTERY_STATUS_FULL;
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return isCharging;
+
+
+    }
+
+    private boolean checkBatteryStatus() {
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d("UPLOADSERVICE", "intent received");
+        if(checkNetwork() && checkBatteryStatus()) {
 
-        Cursor c = db.getAllData();
-        //db.deleteAll();
-        String[] myURLs = new String[c.getCount()];
+            Cursor c = db.getAllData();
+            //db.deleteAll();
+            String[] myURLs = new String[c.getCount()];
 
-        int rows = c.getCount();
+            int rows = c.getCount();
 
-        c.moveToFirst();
-        int i = 0;
-        while(!c.isAfterLast()){
-            //Log.d("PUSH DATA", "Pushing");
-            myURLs[i] = URL+"?lat="+c.getString(1)+AND+"lon="+ c.getString(2)+AND+"speed="+
-                    c.getString(3)+AND + "heading="+c.getString(4)+AND + "timestamp="+c.getString(5) +AND
-                    + "source=" + c.getString(0);
-            Log.d("UPLOADSERVICE", myURLs[i]);
-            i++;
-            c.moveToNext();
+            c.moveToFirst();
+            int i = 0;
+            while (!c.isAfterLast()) {
+                //Log.d("PUSH DATA", "Pushing");
+                myURLs[i] = URL + "?lat=" + c.getString(1) + AND + "lon=" + c.getString(2) + AND + "speed=" +
+                        c.getString(3) + AND + "heading=" + c.getString(4) + AND + "timestamp=" + c.getString(5) + AND
+                        + "source=" + c.getString(0);
+                Log.d("UPLOADSERVICE", myURLs[i]);
+                i++;
+                c.moveToNext();
 
 
+            }
+            db.deleteAll();
+            UploadLocationDataTask task = new UploadLocationDataTask();
+
+            task.execute(myURLs);
         }
-        db.deleteAll();
-        UploadLocationDataTask task = new UploadLocationDataTask();
-
-        task.execute(myURLs);
 
 
 
@@ -86,10 +134,12 @@ public class UploadService extends IntentService {
 
     public static void setServiceAlarm(Context context, boolean isOn) {
         Intent i = new Intent(context, UploadService.class);
+
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, i, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         if (isOn) {
+            Log.d("UPLOADSERVICE", "starting alarm at = " + mPollInterval);
             alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis()
                     , mPollInterval, pendingIntent);
         } else {
@@ -99,7 +149,9 @@ public class UploadService extends IntentService {
     }
 
     public static void setUploadPoll(long pollingInterval) {
+
         mPollInterval = pollingInterval;
+
     }
 
 

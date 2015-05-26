@@ -54,7 +54,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="controller.LoginActivity"
+            android:name="controller.FilterDatesActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -86,8 +86,8 @@
         </activity>
 
         <activity
-            android:name="controller.FilterDatesActivity"
-            android:label="Filter Dates" >
+            android:name="controller.LoginActivity"
+            android:label="Login Activity" >
         </activity>
 
         <activity

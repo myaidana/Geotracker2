@@ -32,19 +32,17 @@ public class ForgotPasswordActivity extends Activity {
 
     EditText mEmail;
     Button mSubmit;
-
     /**
      * On create method to initialize instances
      */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    @Override public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgot_password);
 
-        mEmail = (EditText) findViewById(R.id.enter_name);
+        mEmail = (EditText)findViewById(R.id.enter_name);
 
-        mSubmit = (Button) findViewById(R.id.submit_email);
+        mSubmit = (Button)findViewById(R.id.submit_email);
 
         mSubmit.setOnClickListener(new View.OnClickListener() {
 
@@ -52,21 +50,20 @@ public class ForgotPasswordActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-
                 String email = mEmail.getText().toString().trim();
-                if (email.length() < 4) {
-                    Toast.makeText(v.getContext(), "Email should have at least 4 characters"
-                            , Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    Toast.makeText(v.getContext(), "Password Reset is in process..."
-                            , Toast.LENGTH_SHORT)
-                            .show();
-                    String myURL = URL + EMAIL_URL + email;
-                    Log.d("URL ", myURL);
-                    ForgotPasswordTask task = new ForgotPasswordTask();
-                    task.execute(new String[]{myURL});
-                }
+
+
+
+
+                String myURL = URL + EMAIL_URL + email;
+
+                Log.d("URL ", myURL);
+
+                ForgotPasswordTask task = new ForgotPasswordTask();
+
+                task.execute(new String[]{myURL});
+
+
 
             }
         });
@@ -75,6 +72,9 @@ public class ForgotPasswordActivity extends Activity {
     }
 
     private class ForgotPasswordTask extends AsyncTask<String, Void, JSONObject> {
+
+
+
 
 
         @Override
@@ -121,18 +121,22 @@ public class ForgotPasswordActivity extends Activity {
                     // TODO Auto-generated catch block
 
 
+
+
                 } catch (Exception e) {
 
                     e.printStackTrace();
                 }
 
 
+
             }
+
+
 
 
             return data;
         }
-
         /**
          * On post execute method for web services
          */
