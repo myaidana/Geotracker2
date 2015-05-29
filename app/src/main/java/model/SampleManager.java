@@ -19,15 +19,8 @@ public class SampleManager {
     //private LocationDB mLocDB;
     //private static LocationManager mLocationManager;
 
-
     private String mUserID;
     private static long mPollInterval = 60000;
-
-
-
-
-
-
 
     public SampleManager(Context context, String userid, int pollInterval) {
         mContext = context;
@@ -35,9 +28,6 @@ public class SampleManager {
         //mLocDB = new LocationDB(mContext);
         mUserID = userid;
         //mPollInterval = pollInterval;
-
-
-
     }
 
 //    private PendingIntent getPendingIntent(boolean create) {

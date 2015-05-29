@@ -3,6 +3,7 @@ package eva_aidana.geotracker.controllers;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.robotium.solo.Solo;
+import com.robotium.solo.SystemUtils;
 
 import controller.CreateAccountActivity;
 
@@ -11,7 +12,11 @@ import controller.CreateAccountActivity;
  */
 public class CreateAccountActivityTest extends ActivityInstrumentationTestCase2<CreateAccountActivity> {
     private Solo solo;
-    public CreateAccountActivityTest(){super(CreateAccountActivity.class);}
+
+    public CreateAccountActivityTest() {
+        super(CreateAccountActivity.class);
+    }
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -26,7 +31,7 @@ public class CreateAccountActivityTest extends ActivityInstrumentationTestCase2<
     }
 
 
-    public void testOrientation(){
+    public void testOrientation() {
         solo.enterText(0, "myaidana@gmail.com");
         solo.enterText(1, "password");
         solo.setActivityOrientation(Solo.LANDSCAPE);
@@ -37,7 +42,7 @@ public class CreateAccountActivityTest extends ActivityInstrumentationTestCase2<
         assertTrue("Orientation change failed", textFound);
     }
 
-//    public void testRequiredFields() {
+    //    public void testRequiredFields() {
 //        solo.unlockScreen();
 //        solo.enterText(0, "");
 //        solo.clickOnButton("Create Account");
@@ -45,6 +50,7 @@ public class CreateAccountActivityTest extends ActivityInstrumentationTestCase2<
 //        boolean textFound = solo.searchText("You must agree to the terms and conditions before continuing");
 //        assertTrue("Required fields validation failed", textFound);
 //    }
+
 
     public void testRegisterButton() {
         solo.enterText(0, "anurla92@uw.edu");
@@ -56,7 +62,5 @@ public class CreateAccountActivityTest extends ActivityInstrumentationTestCase2<
         boolean textFound = solo.searchText("Registration is in process...");
         assertTrue("Registration failed", textFound);
     }
-
-
 
 }

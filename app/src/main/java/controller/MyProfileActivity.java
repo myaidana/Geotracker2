@@ -29,6 +29,7 @@ import reception.UploadService;
 
 /**
  * Created by erevear on 5/19/15.
+ * Edited by anurla92
  */
 public class MyProfileActivity extends Activity implements ConnectionCallbacks,
         OnConnectionFailedListener {
@@ -144,13 +145,9 @@ public class MyProfileActivity extends Activity implements ConnectionCallbacks,
                     startUploadService();
                     startLocationUpdates();
                     setupButtons();
-
                     Log.d(TAG, "poll interval " + mPollInterval);
                 }
-
-
             }
-
         });
 
         mStopUpdates.setOnClickListener(new View.OnClickListener() {

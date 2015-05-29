@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 
 import eva_aidana.geotracker.R;
 
@@ -29,20 +30,21 @@ public class ForgotPasswordActivity extends Activity {
 
     private static final String URL = "http://450.atwebpages.com/reset.php?";
     private final static String EMAIL_URL = "email=";
+    private EditText mEmail;
+    private Button mSubmit;
 
-    EditText mEmail;
-    Button mSubmit;
     /**
      * On create method to initialize instances
      */
-    @Override public void onCreate(Bundle savedInstanceState) {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgot_password);
 
-        mEmail = (EditText)findViewById(R.id.enter_name);
+        mEmail = (EditText) findViewById(R.id.enter_name);
 
-        mSubmit = (Button)findViewById(R.id.submit_email);
+        mSubmit = (Button) findViewById(R.id.submit_email);
 
         mSubmit.setOnClickListener(new View.OnClickListener() {
 
@@ -51,8 +53,6 @@ public class ForgotPasswordActivity extends Activity {
             public void onClick(View v) {
 
                 String email = mEmail.getText().toString().trim();
-
-
 
 
                 String myURL = URL + EMAIL_URL + email;
@@ -64,7 +64,6 @@ public class ForgotPasswordActivity extends Activity {
                 task.execute(new String[]{myURL});
 
 
-
             }
         });
 
@@ -74,13 +73,19 @@ public class ForgotPasswordActivity extends Activity {
     private class ForgotPasswordTask extends AsyncTask<String, Void, JSONObject> {
 
 
-
-
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             //mProgressDialog = ProgressDialog.show(CreateAccountActivitywWebServices.this, "Wait", "Downloading...");
+        }
+
+        public void showToast(final String toast)
+        {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(ForgotPasswordActivity.this, toast, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override
@@ -111,32 +116,23 @@ public class ForgotPasswordActivity extends Activity {
                         String feedback = data.getString("result");
                         Log.d("Http Response:", data.getString("result"));
                         //provideFeedback(data);
-
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     // System.out.print("response " + response.toString());
+                } catch (UnknownHostException e) {
+                    Log.e("No network", "exception !!!!!!!!!!!!!");
+                    showToast("No wifi connection");
+
                 } catch (ClientProtocolException e) {
                     // TODO Auto-generated catch block
-
-
-
-
                 } catch (Exception e) {
-
                     e.printStackTrace();
                 }
-
-
-
             }
-
-
-
-
             return data;
         }
+
         /**
          * On post execute method for web services
          */

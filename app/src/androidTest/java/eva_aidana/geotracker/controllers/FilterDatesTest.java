@@ -1,10 +1,7 @@
 package eva_aidana.geotracker.controllers;
 
 import android.test.ActivityInstrumentationTestCase2;
-
 import com.robotium.solo.Solo;
-
-import controller.CreateAccountActivity;
 import controller.FilterDatesActivity;
 
 /**
@@ -26,18 +23,45 @@ public class FilterDatesTest  extends ActivityInstrumentationTestCase2<FilterDat
         solo.finishOpenedActivities();
     }
 
-    public void testOrientation(){
-        solo.enterText(0, "2015-5-20");
-        solo.enterText(1, "21:33");
-        solo.enterText(2, "2015-5-20");
-        solo.enterText(3, "21:34");
+    public void testOrientation() {
+        solo.clickOnButton("Start Date");
+        solo.clickOnButton("Done");
         solo.setActivityOrientation(Solo.LANDSCAPE);
-        boolean textFound = solo.searchText("2015-5-20");
-        textFound = solo.searchText("21:33");
-        textFound = solo.searchText("21:34");
+        boolean textFound = solo.searchText("2015-5-29");
         assertTrue("Orientation change failed", textFound);
         solo.setActivityOrientation(Solo.PORTRAIT);
-        textFound = solo.searchText("2015-5-20");
+        textFound = solo.searchText("2015-5-29");
         assertTrue("Orientation change failed", textFound);
     }
+
+    public void testStartDateButton() {
+        solo.clickOnButton("Start Date");
+        boolean textFound = solo.searchText("Done");
+        assertTrue("Start Date failed", textFound);
+    }
+
+    public void testStartTimeButton() {
+        solo.clickOnButton("Start Time");
+        boolean textFound = solo.searchText("Done");
+        assertTrue("Start Time failed", textFound);
+    }
+
+    public void testEndDateButton() {
+        solo.clickOnButton("End Date");
+        boolean textFound = solo.searchText("Done");
+        assertTrue("End Date failed", textFound);
+    }
+
+    public void testEndTimeButton() {
+        solo.clickOnButton("End Time");
+        boolean textFound = solo.searchText("Done");
+        assertTrue("End Time failed", textFound);
+    }
+
+    public void testMyProfileButton() {
+        solo.clickOnButton("My Profile");
+        boolean textFound = solo.searchText("Start Service");
+        assertTrue("My Profile Button failed", textFound);
+    }
+
 }

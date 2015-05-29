@@ -36,16 +36,28 @@ public class LocationDB extends SQLiteOpenHelper {
     private static final String INSERT = "insert into " + LOCATIONS_TABLE
             + "(userid, latitude, longitude, speed, heading, timestamp) values (?, ?, ?, ?, ?, ?)";
 
-    public LocationDB(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public LocationDB() {
+        super(null, DATABASE_NAME, null, DATABASE_VERSION);
+        setContext(context);
     }
+
+    public LocationDB(Context the_context) {
+        super(the_context, DATABASE_NAME, null, DATABASE_VERSION);
+        context = the_context;
+    }
+
 
     /**
      * Inserts the id and other information
      * If successful, returns the rowid otherwise -1.
      */
     public boolean insert(String userID, double latitude, double longitude, double speed, double heading) throws SQLException {
-        db = this.getWritableDatabase();
+        if(db!=null){
+            db = this.getWritableDatabase();
+        }
+
+
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(USERID_COLUMN_NAME, userID);
         contentValues.put(LAT_COLUMN_NAME, latitude);
@@ -55,31 +67,31 @@ public class LocationDB extends SQLiteOpenHelper {
         Calendar calendar = Calendar.getInstance();
         java.util.Date now = calendar.getTime();
         Date date = new Date();
-        long time = date.getTime()/1000;
+        long time = date.getTime() / 1000;
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         int millisecond = cal.get(Calendar.MILLISECOND);
         Time t = new Time(Time.getCurrentTimezone());
         t.setToNow();
         Log.d("LocationDB", "time " + time);
-// 3) a java current time (now) instance
         java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
-        contentValues.put(TIME_COLUMN_NAME, Calendar.getInstance().getTimeInMillis()/1000);
-        //  Log.i("MyApp", " TIME STAMP !!!!!! " + now.getTime());
+        contentValues.put(TIME_COLUMN_NAME, Calendar.getInstance().getTimeInMillis() / 1000);
+        if(db!=null){
+            db.insert(LOCATIONS_TABLE, null, contentValues);
+        }
 
-        db.insert(LOCATIONS_TABLE, null, contentValues);
         return true;
     }
 
     public Cursor getData(String id, long start, long end) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM "+ LOCATIONS_TABLE + " WHERE timestamp BETWEEN ? AND ? AND userid = ?";
+        String query = "SELECT * FROM " + LOCATIONS_TABLE + " WHERE timestamp BETWEEN ? AND ? AND userid = ?";
         String[] args = {Long.toString(start), Long.toString(end), id};
         Cursor res = db.rawQuery(query, args);
         return res;
     }
 
-    public Cursor getAllData(){
+    public Cursor getAllData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from Locations", null);
         return res;
@@ -112,7 +124,7 @@ public class LocationDB extends SQLiteOpenHelper {
     public ArrayList<LocationData> selectAll() {
         ArrayList<LocationData> list = new ArrayList<LocationData>();
         Cursor cursor = this.db.query(LOCATIONS_TABLE, new String[]
-                { "latitude", "longitude", "speed", "heading", "timestamp"},null, null, null, null, null);
+                {"latitude", "longitude", "speed", "heading", "timestamp"}, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
 
@@ -130,6 +142,7 @@ public class LocationDB extends SQLiteOpenHelper {
 //    {
 //        db.close();
 //    }
+
     /**
      * Return the latitude when id is passed.
      * null if no record found.
@@ -139,9 +152,12 @@ public class LocationDB extends SQLiteOpenHelper {
      */
     public Cursor selectByID(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from Locations WHERE userid=?", new String[] {id});
+        Cursor res = db.rawQuery("select * from Locations WHERE userid=?", new String[]{id});
         return res;
     }
 
 
+    public void setContext(Context the_context) {
+        this.context = the_context;
+    }
 }

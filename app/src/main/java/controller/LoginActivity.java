@@ -1,5 +1,8 @@
 package controller;
-
+/**
+ * Created by erevear on 5/19/15.
+ * Edited by anurla92
+ */
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +27,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 
 import eva_aidana.geotracker.R;
 import model.Constants;
@@ -143,6 +147,15 @@ public class LoginActivity extends Activity {
             super.onPreExecute();
             //mProgressDialog = ProgressDialog.show(CreateAccountActivitywWebServices.this, "Wait", "Downloading...");
         }
+
+        public void showToast(final String toast)
+        {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(LoginActivity.this, toast, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
         @Override
         protected JSONObject doInBackground(String... urls) {
             JSONObject data = new JSONObject();
@@ -175,6 +188,10 @@ public class LoginActivity extends Activity {
                         e.printStackTrace();
                     }
                     // System.out.print("response " + response.toString());
+
+                } catch (UnknownHostException e) {
+                    Log.e("No network", "exception !!!!!!!!!!!!!");
+                    showToast("No wifi connection");
                 } catch (ClientProtocolException e) {
                     // TODO Auto-generated catch block
                 } catch (Exception e) {

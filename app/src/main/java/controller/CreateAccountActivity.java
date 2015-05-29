@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 
 import eva_aidana.geotracker.R;
 import model.Constants;
@@ -56,8 +57,6 @@ public class CreateAccountActivity extends Activity {
     private String mEmail;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +74,9 @@ public class CreateAccountActivity extends Activity {
         mUserQuestion = (EditText) findViewById(R.id.usersecurityquestion);
         mUserAnswer = (EditText) findViewById(R.id.usersecurityanswer);
 
-        mAgree = (CheckBox)findViewById(R.id.Agreement);
+        mAgree = (CheckBox) findViewById(R.id.Agreement);
 
-        mAgreement = (TextView)findViewById(R.id.agreement_text);
+        mAgreement = (TextView) findViewById(R.id.agreement_text);
 
 
         mSaveData = (Button) findViewById(R.id.terms);
@@ -99,11 +98,17 @@ public class CreateAccountActivity extends Activity {
 
                 Log.d("URL ", myURL);
                 if (mAgree.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Registration is in process...", Toast.LENGTH_SHORT).show();
-
-                    CreateAccountTask task = new CreateAccountTask();
-
-                    task.execute(new String[]{myURL});
+                    if(mEmail.length() < 4 ){
+                        Toast.makeText(getApplicationContext(), "Invalid email", Toast.LENGTH_SHORT).show();
+                    } else if(password.length()<4){
+                        Toast.makeText(getApplicationContext(), "Password is too short", Toast.LENGTH_SHORT).show();
+                    } else if(question.length()<1 || answer.length()<1){
+                        Toast.makeText(getApplicationContext(), "Invalid question or answer", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Registration is in process...", Toast.LENGTH_SHORT).show();
+                        CreateAccountTask task = new CreateAccountTask();
+                        task.execute(new String[]{myURL});
+                    }
 
                 } else {
                     Toast.makeText(getApplicationContext(), "You must agree to the terms and" +
@@ -117,14 +122,20 @@ public class CreateAccountActivity extends Activity {
     }
 
 
-
     private class CreateAccountTask extends AsyncTask<String, Void, JSONObject> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             //mProgressDialog = ProgressDialog.show(CreateAccountActivitywWebServices.this, "Wait", "Downloading...");
         }
-
+        public void showToast(final String toast)
+        {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(CreateAccountActivity.this, toast, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
         @Override
         protected JSONObject doInBackground(String... urls) {
             JSONObject data = new JSONObject();
@@ -156,15 +167,18 @@ public class CreateAccountActivity extends Activity {
 
 
                     } catch (JSONException e) {
+                        result += "Unable to create account, Reason:" + e.getMessage();
                         e.printStackTrace();
                     }
                     // System.out.print("response " + response.toString());
+                } catch (UnknownHostException e) {
+                    Log.e("No network", "exception !!!!!!!!!!!!!");
+                    showToast("No wifi connection");
                 } catch (ClientProtocolException e) {
-                    // TODO Auto-generated catch block
-
+                    result += "Unable to create account, Reason:" + e.getMessage();
 
                 } catch (Exception e) {
-
+                    result += "Unable to create account, Reason:" + e.getMessage();
                     e.printStackTrace();
                 }
 
@@ -209,7 +223,7 @@ public class CreateAccountActivity extends Activity {
                 } else if (feedback.has("agreement")) {
                     String agreement = feedback.getString("agreement");
                     agreement = agreement.replace("<h2>", "");
-                    agreement  = agreement.replace("</h2>", "");
+                    agreement = agreement.replace("</h2>", "");
                     agreement = agreement.replace("<h3>", "");
                     agreement = agreement.replace("</h3>", "");
                     agreement = agreement.replace("<p>", "");

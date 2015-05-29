@@ -2,6 +2,8 @@ package eva_aidana.geotracker.controllers;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
+import com.robotium.solo.SystemUtils;
+
 import controller.ForgotPasswordActivity;
 
 /**
@@ -49,6 +51,5 @@ public class ForgotPasswordTest extends ActivityInstrumentationTestCase2<ForgotP
         boolean textFound = solo.searchText("An email with instructions");
         assertTrue("Password Reset failed", textFound);
     }
-
 
 }

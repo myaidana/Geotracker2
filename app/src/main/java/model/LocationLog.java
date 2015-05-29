@@ -17,6 +17,8 @@ public class LocationLog implements Parcelable {
         mLocationList = new ArrayList<>();
     }
 
+
+
     public LocationLog(Parcel in) {
         mLocationList = new ArrayList<>();
         mLocationList = in.readArrayList(LocationData.class.getClassLoader());
